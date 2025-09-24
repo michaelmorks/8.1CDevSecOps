@@ -1,11 +1,9 @@
 pipeline {
-    agent {
-        docker { image 'node:18' }
-    }
+    agent any
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/yourusername/8.1CDevSecOps.git'
+                git branch: 'main', url: 'https://github.com/michaelmorks/8.1CDevSecOps.git'
             }
         }
         stage('Install Dependencies') {
