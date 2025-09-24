@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        // Add Homebrew Node to PATH
+        PATH = "/opt/homebrew/opt/node@18/bin:${env.PATH}"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -7,16 +11,24 @@ pipeline {
             }
         }
         stage('Install Dependencies') {
-            steps { sh 'npm install' }
+            steps { 
+                sh 'npm install' 
+            }
         }
         stage('Run Tests') {
-            steps { sh 'npm test || true' }
+            steps { 
+                sh 'npm test || true' 
+            }
         }
         stage('Generate Coverage Report') {
-            steps { sh 'npm run coverage || true' }
+            steps { 
+                sh 'npm run coverage || true' 
+            }
         }
         stage('NPM Audit (Security Scan)') {
-            steps { sh 'npm audit || true' }
+            steps { 
+                sh 'npm audit || true' 
+            }
         }
     }
 }
