@@ -1,30 +1,51 @@
 pipeline {
     agent any
+
+    // Ensure Jenkins can find Node.js
+    environment {
+        PATH = "/opt/homebrew/opt/node@18/bin:${env.PATH}"
+    }
+
     stages {
         stage('Checkout') {
-            steps { git branch: 'main', url: 'https://github.com/michaelmorks/8.1CDevSecOps.git' }
+            steps {
+                git branch: 'main', url: 'https://github.com/michaelmorks/8.1CDevSecOps.git'
+            }
         }
+
         stage('Install Dependencies') {
-            steps { sh 'npm install' }
+            steps {
+                sh 'npm install'
+            }
         }
+
         stage('Run Tests') {
-            steps { sh 'npm test || true' }
+            steps {
+                sh 'npm test || true'
+            }
         }
+
         stage('Generate Coverage Report') {
-            steps { sh 'npm run coverage || true' }
+            steps {
+                sh 'npm run coverage || true'
+            }
         }
+
         stage('NPM Audit (Security Scan)') {
-            steps { sh 'npm audit || true' }
+            steps {
+                sh 'npm audit || true'
+            }
         }
     }
+
     post {
         always {
             emailext(
                 to: 'Michaelmorks30@gmail.com',
-                subject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!",
-                body: """Build Status: $BUILD_STATUS
+                subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.currentResult}!",
+                body: """Build Status: ${currentBuild.currentResult}
 
-Check console output at $BUILD_URL to view the results.""",
+Check console output at ${env.BUILD_URL} to view the results.""",
                 attachLog: true
             )
         }
